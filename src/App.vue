@@ -1,23 +1,30 @@
-<script>
-import AppMain from './components/AppMain.vue'
-
-export default {
-    components: {
-        AppMain
-    },
-    data() {
-        return {
-        }
-    }
-}
-</script>
-
 <template>
-  <div class="app">
+  <div id="app">
     <AppMain />
   </div>
 </template>
 
-<style scoped lang="scss">
+<script>
+import AppMain from './components/AppMain.vue';
 
+
+export default {
+  name: 'App',
+  components: {
+    AppMain
+  }
+};
+</script>
+
+<style>
+
+body{
+  font-family:Arial, Helvetica, sans-serif;
+}
+
+*{
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
 </style>
