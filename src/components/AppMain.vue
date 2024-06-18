@@ -47,30 +47,17 @@ export default {
 
         const items = computed(() => state.items);
 
-        const searchItems = async () => {
+        const searchItems = () => {
             console.log('Searching for:', query.value);
             if (query.value.trim() !== '') {
-                try {
-                    const movieResponse = await axios.get(
-                        `https://api.themoviedb.org/3/search/movie`, {
-                            params: {
-                                api_key: state.apiKey,
-                                query: query.value,
-                                language: 'it-IT'
-                            }
-                        }
-                    );
-
-                    const tvResponse = await axios.get(
-                        `https://api.themoviedb.org/3/search/tv`, {
-                            params: {
-                                api_key: state.apiKey,
-                                query: query.value,
-                                language: 'it-IT'
-                            }
-                        }
-                    );
-
+                axios.get(`https://api.themoviedb.org/3/search/movie`, {
+                    params: {
+                        api_key: state.apiKey,
+                        query: query.value,
+                        language: 'it-IT'
+                    }
+                })
+                .then(movieResponse => {
                     const movies = movieResponse.data.results.map(movie => ({
                         id: movie.id,
                         title: movie.title,
@@ -81,21 +68,35 @@ export default {
                         poster_path: movie.poster_path
                     }));
 
-                    const tvShows = tvResponse.data.results.map(tv => ({
-                        id: tv.id,
-                        title: tv.name,
-                        original_title: tv.original_name,
-                        original_language: tv.original_language,
-                        vote_average: tv.vote_average,
-                        type: 'tv',
-                        poster_path: tv.poster_path
-                    }));
+                    axios.get(`https://api.themoviedb.org/3/search/tv`, {
+                        params: {
+                            api_key: state.apiKey,
+                            query: query.value,
+                            language: 'it-IT'
+                        }
+                    })
+                    .then(tvResponse => {
+                        const tvShows = tvResponse.data.results.map(tv => ({
+                            id: tv.id,
+                            title: tv.name,
+                            original_title: tv.original_name,
+                            original_language: tv.original_language,
+                            vote_average: tv.vote_average,
+                            type: 'tv',
+                            poster_path: tv.poster_path
+                        }));
 
-                    setItems([...movies, ...tvShows]);
-                } catch (error) {
-                    console.error('Error fetching data:', error);
+                        setItems([...movies, ...tvShows]);
+                    })
+                    .catch(error => {
+                        console.error('Error fetching TV shows:', error);
+                        setItems([]);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching movies:', error);
                     setItems([]);
-                }
+                });
             } else {
                 setItems([]);
             }
@@ -198,4 +199,5 @@ button:hover {
     width: 100px;
     height: auto;
 }
+
 </style>
