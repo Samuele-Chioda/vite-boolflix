@@ -2,7 +2,7 @@
     <div class="container">
         <!-- Searchbar -->
         <div class="row">
-            <input type="text" v-model="query" placeholder="Search for movies or TV shows..." />
+            <input type="text" v-model="query" placeholder="Search for movies or TV shows..." @keyup.enter="searchItems" />
             <button @click="searchItems">Search</button>
         </div>
         <!-- Lista dei film trovati -->
@@ -153,7 +153,6 @@ li {
     border-radius: 8px;
     background-color: #f9f9f9;
     flex: 0 0 calc(33.333% - 2rem);
-    box-sizing: border-box;
 }
 
 .cards {
