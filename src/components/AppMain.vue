@@ -2,18 +2,10 @@
     <div>
         <nav>
             <ul class="nav-li">
-                <li class="nav-li">
-                    TvShows
-                </li>
-                <li class="nav-li">
-                    Movies
-                </li>
-                <li class="nav-li">
-                    Recently Added
-                </li>
-                <li class="nav-li">
-                    MyList
-                </li>
+                <li class="nav-li">TvShows</li>
+                <li class="nav-li">Movies</li>
+                <li class="nav-li">Recently Added</li>
+                <li class="nav-li">MyList</li>
             </ul>
         </nav>
     </div>
@@ -29,22 +21,10 @@
         </div>
         <!-- Lista dei film trovati -->
         <div class="cards">
-            <div class="card">
-                <ul>
-                    <li class="cards-list" v-for="item in items" :key="item.id">
-                        <p><strong>Type:</strong> {{ item.type === 'movie' ? 'Film' : 'Serie TV' }}</p>
-                        <p><strong>Title:</strong> {{ item.title }}</p>
-                        <p><strong>Original Title:</strong> {{ item.original_title }}</p>
-                        <p>
-                            <strong>Language:</strong>
-                            <img :src="getFlagUrl(item.original_language)" :alt="item.original_language" class="flag" />
-                        </p>
-                        <p><strong>Vote:</strong> {{ item.vote_average }}</p>
-                        <p v-if="item.poster_path">
-                            <img :src="getPosterUrl(item.poster_path)" alt="Poster" class="poster" />
-                        </p>
-                    </li>
-                </ul>
+            <div class="card" v-for="item in items" :key="item.id">
+                <div v-if="item.poster_path" class="poster-container">
+                    <img :src="getPosterUrl(item.poster_path)" alt="Poster" class="poster" />
+                </div>
             </div>
         </div>
     </div>
@@ -124,24 +104,9 @@ export default {
             }
         };
 
-        const getFlagUrl = (language) => {
-            const images = {
-                'en': '/src/assets/img/en.png',
-                'it': '/src/assets/img/it.png',
-                'fr': '/src/assets/img/fr.png',
-                'es': '/src/assets/img/es.png',
-                'de': '/src/assets/img/de.png',
-                'ja': '/src/assets/img/ja.png',
-                'zh': '/src/assets/img/zh.png',
-                'ru': '/src/assets/img/ru.png',
-                'default': '/src/assets/img/default.png',
-            };
-            return images[language] || images['default'];
-        };
-
         const getPosterUrl = (posterPath) => {
             const baseUrl = 'https://image.tmdb.org/t/p/';
-            const size = 'w342';  // dimensione
+            const size = 'w342';
             return `${baseUrl}${size}${posterPath}`;
         };
 
@@ -149,7 +114,6 @@ export default {
             query,
             items,
             searchItems,
-            getFlagUrl,
             getPosterUrl
         };
     }
@@ -161,37 +125,41 @@ export default {
     padding: 3rem;
 }
 
-ul {
+.cards {
     display: flex;
     flex-wrap: wrap;
-    padding: 0;
+    justify-content: space-between;
+    gap: 1rem;
 }
 
-li {
-    cursor: default;
-}
-
-.nav-li {
-    color: white;
-    display: flex;
-    justify-content: space-evenly;
-    padding-top: 2rem;
-    list-style: none;
-    transition: color 0.3s;
-}
-
-.nav-li:hover {
-    color: #007bff;
-}
-
-.cards-list {
-    list-style-type: none;
-    margin: 1rem;
-    padding: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 8px;
+.card {
+    flex: 1 1 calc(20% - 1rem);
     background-color: #f9f9f9;
-    flex: 0 0 calc(33.333% - 2rem);
+    border-radius: 15px;
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.poster-container {
+    width: 100%;
+    height: 0;
+    padding-bottom: 150%;
+    position: relative;
+}
+
+.poster {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 15px;
+    transition: filter 0.3s ease;
+}
+
+.poster:hover {
+    filter: brightness(0.7);
 }
 
 input {
@@ -218,21 +186,6 @@ button:hover {
     background-color: #0056b3;
 }
 
-.flag {
-    width: 5%;
-    height: 15px;
-}
-
-.poster {
-    width: 100px;
-    height: auto;
-}
-
-.cards {
-    display: flex;
-    flex-wrap: wrap;
-}
-
 .row {
     margin-bottom: 2rem;
     display: flex;
@@ -242,6 +195,27 @@ button:hover {
 }
 
 #jumbo {
-    margin-bottom: 3rem;padding: 1rem;
+    margin-bottom: 3rem;
+    padding: 1rem;
+}
+
+.nav-li {
+    color: white;
+    padding: 1rem;
+    list-style: none;
+    cursor: pointer;
+    transition: color 0.3s;
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+}
+
+.nav-li:hover {
+    color: #007bff;
+}
+
+nav {
+    background-color: #000;
+    padding: 1rem;
 }
 </style>
