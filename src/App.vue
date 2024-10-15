@@ -16,13 +16,12 @@ export default {
 </script>
 
 <style>
-
-body{
-  font-family:Arial, Helvetica, sans-serif;
+body {
+  font-family: Arial, Helvetica, sans-serif;
   background-color: black;
 }
 
-*{
+* {
   padding: 0;
   margin: 0;
   box-sizing: border-box;

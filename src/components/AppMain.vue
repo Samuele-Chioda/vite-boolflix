@@ -1,15 +1,37 @@
 <template>
+    <div>
+        <nav>
+            <ul class="nav-li">
+                <li class="nav-li">
+                    TvShows
+                </li>
+                <li class="nav-li">
+                    Movies
+                </li>
+                <li class="nav-li">
+                    Recently Added
+                </li>
+                <li class="nav-li">
+                    MyList
+                </li>
+            </ul>
+        </nav>
+    </div>
     <div class="container">
+        <div id="jumbo">
+            <img src="../assets/img/boolflix-3437674168.png" alt="">
+        </div>
         <!-- Searchbar -->
         <div class="row">
-            <input type="text" v-model="query" placeholder="Search for movies or TV shows..." @keyup.enter="searchItems" />
+            <input type="text" v-model="query" placeholder="Search for movies or TV shows..."
+                @keyup.enter="searchItems" />
             <button @click="searchItems">Search</button>
         </div>
         <!-- Lista dei film trovati -->
         <div class="cards">
             <div class="card">
                 <ul>
-                    <li v-for="item in items" :key="item.id">
+                    <li class="cards-list" v-for="item in items" :key="item.id">
                         <p><strong>Type:</strong> {{ item.type === 'movie' ? 'Film' : 'Serie TV' }}</p>
                         <p><strong>Title:</strong> {{ item.title }}</p>
                         <p><strong>Original Title:</strong> {{ item.original_title }}</p>
@@ -31,7 +53,7 @@
 <script>
 import { computed } from 'vue';
 import { state, setItems, setQuery } from '../store/store';
-import axios from 'axios'; 
+import axios from 'axios';
 
 export default {
     name: 'AppMain',
@@ -57,46 +79,46 @@ export default {
                         language: 'it-IT'
                     }
                 })
-                .then(movieResponse => {
-                    const movies = movieResponse.data.results.map(movie => ({
-                        id: movie.id,
-                        title: movie.title,
-                        original_title: movie.original_title,
-                        original_language: movie.original_language,
-                        vote_average: movie.vote_average,
-                        type: 'movie',
-                        poster_path: movie.poster_path
-                    }));
-
-                    axios.get(`https://api.themoviedb.org/3/search/tv`, {
-                        params: {
-                            api_key: state.apiKey,
-                            query: query.value,
-                            language: 'it-IT'
-                        }
-                    })
-                    .then(tvResponse => {
-                        const tvShows = tvResponse.data.results.map(tv => ({
-                            id: tv.id,
-                            title: tv.name,
-                            original_title: tv.original_name,
-                            original_language: tv.original_language,
-                            vote_average: tv.vote_average,
-                            type: 'tv',
-                            poster_path: tv.poster_path
+                    .then(movieResponse => {
+                        const movies = movieResponse.data.results.map(movie => ({
+                            id: movie.id,
+                            title: movie.title,
+                            original_title: movie.original_title,
+                            original_language: movie.original_language,
+                            vote_average: movie.vote_average,
+                            type: 'movie',
+                            poster_path: movie.poster_path
                         }));
 
-                        setItems([...movies, ...tvShows]);
+                        axios.get(`https://api.themoviedb.org/3/search/tv`, {
+                            params: {
+                                api_key: state.apiKey,
+                                query: query.value,
+                                language: 'it-IT'
+                            }
+                        })
+                            .then(tvResponse => {
+                                const tvShows = tvResponse.data.results.map(tv => ({
+                                    id: tv.id,
+                                    title: tv.name,
+                                    original_title: tv.original_name,
+                                    original_language: tv.original_language,
+                                    vote_average: tv.vote_average,
+                                    type: 'tv',
+                                    poster_path: tv.poster_path
+                                }));
+
+                                setItems([...movies, ...tvShows]);
+                            })
+                            .catch(error => {
+                                console.error('Error fetching TV shows:', error);
+                                setItems([]);
+                            });
                     })
                     .catch(error => {
-                        console.error('Error fetching TV shows:', error);
+                        console.error('Error fetching movies:', error);
                         setItems([]);
                     });
-                })
-                .catch(error => {
-                    console.error('Error fetching movies:', error);
-                    setItems([]);
-                });
             } else {
                 setItems([]);
             }
@@ -146,6 +168,23 @@ ul {
 }
 
 li {
+    cursor: default;
+}
+
+.nav-li {
+    color: white;
+    display: flex;
+    justify-content: space-evenly;
+    padding-top: 2rem;
+    list-style: none;
+    transition: color 0.3s;
+}
+
+.nav-li:hover {
+    color: #007bff;
+}
+
+.cards-list {
     list-style-type: none;
     margin: 1rem;
     padding: 1rem;
@@ -153,15 +192,6 @@ li {
     border-radius: 8px;
     background-color: #f9f9f9;
     flex: 0 0 calc(33.333% - 2rem);
-}
-
-.cards {
-    display: flex;
-    flex-wrap: wrap;
-}
-
-.row {
-    margin-bottom: 2rem;
 }
 
 input {
@@ -175,14 +205,13 @@ input {
 }
 
 button {
-    padding: 0.5rem 1rem;
     border: none;
     border-radius: 4px;
     background-color: #007bff;
     color: white;
-    font-size: 1rem;
     cursor: pointer;
     transition: background-color 0.3s;
+    padding: 1rem;
 }
 
 button:hover {
@@ -199,4 +228,20 @@ button:hover {
     height: auto;
 }
 
+.cards {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.row {
+    margin-bottom: 2rem;
+    display: flex;
+    width: 80%;
+    margin: auto;
+    margin-bottom: 2rem;
+}
+
+#jumbo {
+    margin-bottom: 3rem;padding: 1rem;
+}
 </style>
